@@ -1,0 +1,244 @@
+exp6 - random process
+
+% Parameters
+N = 1000;                     % Number of samples
+t = 1:N;
+x = randn(1, N);              % Generate white Gaussian noise
+
+% Statistical parameters
+mean_x = mean(x);
+var_x = var(x);
+
+% Autocorrelation with 'biased' normalization
+autocorr_x = xcorr(x, 'biased');
+
+% Compute Power Spectral Density using periodogram
+[power_spec_density, freq] = periodogram(x, [], [], 1);  % 1 Hz sampling frequency
+
+% Plotting
+figure;
+
+% Plot the random process
+subplot(2,2,1);
+plot(t, x);
+title('Random Process');
+xlabel('Time Index');
+ylabel('Amplitude');
+
+% Plot the autocorrelation function
+subplot(2,2,2);
+plot(-(N-1):(N-1), autocorr_x);
+title('Autocorrelation Function');
+xlabel('Lag');
+ylabel('Autocorrelation');
+
+% Plot the power spectral density
+subplot(2,2,3);
+plot(freq, power_spec_density);
+title('Power Spectral Density');
+xlabel('Frequency (Hz)');
+ylabel('Power/Frequency (dB/Hz)');
+
+% Display mean and variance
+disp('Statistical Parameters:');
+disp(['Mean: ', num2str(mean_x)]);
+disp(['Variance: ', num2str(var_x)]);
+
+
+
+
+
+
+
+
+
+exp7 - bpsk
+
+% Initialization of data and variables BPSK
+clc;
+clear all;
+close all;
+
+nr_data_bits = 8192;
+
+% Generate random bits (uniform distribution [0,1])
+b_data = (rand(1, nr_data_bits) > 0.5);
+b = b_data;
+
+% BPSK modulation
+d = zeros(1, length(b));
+for n = 1:length(b)
+    if b(n) == 0
+        d(n) = exp(1j * 0);       % BPSK symbol for 0: exp(j*0) = 1
+    else
+        d(n) = exp(1j * pi);      % BPSK symbol for 1: exp(j*pi) = -1
+    end
+end
+
+disp(d);  % Display BPSK symbols
+
+bpsk = d;
+
+% Plotting BPSK data (constellation)
+figure(1);
+plot(real(d), imag(d), 'o');
+axis([-2 2 -2 2]);
+grid on;
+xlabel('Real');
+ylabel('Imag');
+title('BPSK Constellation');
+
+% Addition of noise and BER calculation
+SNR_dB = 0:10;        % Define SNR range in dB
+BER1 = [];
+SNR1 = [];
+
+for SNR = SNR_dB
+    % Noise standard deviation (sigma)
+    % For BPSK, symbol energy is 1, so:
+    % sigma^2 = 1/(2*Eb/N0) = 1 / (2 * 10^(SNR/10))
+    sigma = sqrt(1 / (2 * 10^(SNR/10)));
+    
+    % Add complex Gaussian noise
+    noise = sigma * (randn(size(bpsk)) + 1j * randn(size(bpsk)));
+    snbpsk = bpsk + noise;
+
+    % Plot noisy constellation at first SNR only
+    if SNR == SNR_dB(1)
+        figure(2);
+        plot(real(snbpsk), imag(snbpsk), 'o');
+        axis([-2 2 -2 2]);
+        grid on;
+        xlabel('Real');
+        ylabel('Imag');
+        title(['BPSK with noise at SNR = ', num2str(SNR), ' dB']);
+    end
+
+    % Demodulation: Threshold detection
+    r = snbpsk;
+    bhat = real(r) < 0;    % Decision: 1 if real(r) < 0, else 0
+    bhat = bhat(:)';       % Ensure row vector
+
+    % Bit Error Rate calculation
+    ne = sum(b ~= bhat);   % Number of bit errors
+    BER = ne / length(b);  % Bit Error Rate
+
+    % Store results
+    BER1 = [BER1 BER];
+    SNR1 = [SNR1 SNR];
+end
+
+
+
+
+
+
+
+exp8 - huffman
+
+clc;
+clear;
+close all;
+
+% Input number of symbols
+x = input('Enter number of symbols: ');
+
+% Initialize arrays
+symbols = zeros(1, x);
+p = zeros(1, x);
+
+% Input symbols and their probabilities
+for m = 1:x
+    symbols(m) = input(['Enter symbol number ' num2str(m) ': ']);
+    p(m) = input(['Enter probability for symbol ' num2str(m) ': ']);
+end
+
+% Create Huffman dictionary
+[dict, avglen] = huffmandict(symbols, p);
+
+% Display the Huffman dictionary
+disp('Huffman Dictionary:');
+disp(dict);
+
+% Encode the symbols using the Huffman dictionary
+hcode = huffmanenco(symbols, dict);
+
+% Decode the encoded signal
+dsig = huffmandeco(hcode, dict);
+
+% Calculate entropy
+Hx = 0;
+for m = 1:x
+    Hx = Hx + (p(m) * log2(1/p(m)));
+end
+
+% Display results
+disp(['Entropy H(X): ', num2str(Hx)]);
+disp(['Average Codeword Length: ', num2str(avglen)]);
+
+% Calculate and display efficiency
+Efficiency = (Hx / avglen) * 100;
+disp(['Efficiency: ', num2str(Efficiency), '%']);
+
+
+
+
+exp9 - linear
+
+clc;
+
+% Input parameters
+k = input('Enter the number of message bits (k): ');
+n = input('Enter the number of code bits (n): ');
+p = input('Enter the parity matrix (p): ');
+m = input('Enter the message bits as a row vector [e.g., [1 0 1]]: ');
+
+% Generator matrix construction
+G = [eye(k), p];
+
+% Encode using linear block code
+C = encode(m, n, k, 'linear', G);
+disp('Codeword C is:');
+disp(C);
+
+% Decode using the same generator matrix
+D = decode(C, n, k, 'linear', G);
+disp('Decoded message D is:');
+disp(D);
+
+
+
+
+
+
+
+exp10 - cyclic
+
+clc;
+
+% Input parameters
+k = input('Enter the length of the message word (k): ');
+n = input('Enter the length of the code word (n): ');
+m = input('Enter the message word as a row vector [e.g., [1 0 1 1]]: ');
+
+% Generate the generator polynomial for cyclic code
+g = cyclpoly(n, k, 'max');
+
+disp('Generator polynomial coefficients:');
+disp(g);
+
+% Display generator polynomial in symbolic form
+gx = poly2sym(g);
+disp('Generator polynomial:');
+disp(gx);
+
+% Encode the message using cyclic encoding
+C = encode(m, n, k, 'cyclic', g);
+disp('Encoded message:');
+disp(C);
+
+% Decode the received codeword
+D = decode(C, n, k, 'cyclic', g);
+disp('Decoded message:');
+disp(D);
+
