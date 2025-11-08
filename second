@@ -1,0 +1,628 @@
+class BankClient {
+    int balAmount = 5000;
+
+    synchronized void withdrawMoney(int amount) {
+        while (balAmount < amount) { // wait if balance is insufficient
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        balAmount -= amount;
+        System.out.println("Balance after withdrawal: " + balAmount);
+    }
+
+    synchronized void depositMoney(int amount) {
+        balAmount += amount;
+        System.out.println("Balance after deposit: " + balAmount);
+        notify(); // wake up waiting thread
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        final BankClient client = new BankClient();
+
+        new Thread(() -> client.withdrawMoney(7000)).start();
+        new Thread(() -> client.depositMoney(3000)).start();
+    }
+}
+
+
+
+Factorial
+
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter Number: ");
+        int num = sc.nextInt();
+        int fact = 1;
+        
+        for(int i = 1; i <= num; i++) {
+            fact = fact * i;
+        }
+        System.out.println(fact);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sum avg
+
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many numbers do you want: ");
+        double num = sc.nextDouble();
+        
+        double sum = 0;
+        for(int i = 0; i < num; i++){
+            System.out.println("Enter Number: ");
+            double n = sc.nextDouble();
+            sum = sum + n;
+        }
+        
+        double avg = sum/num;
+        System.out.println(sum);
+        System.out.println(avg);
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Prime number
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many prime numbers to print: ");
+        int n = sc.nextInt();
+        int count = 0;
+        int num = 2;
+        
+        while(count < n){
+            if(isPrimeNum(num)) {
+                System.out.println(num + " ");
+                count++;
+            }
+            num++;
+        }
+    }
+    static boolean isPrimeNum(int x) {
+            if(x < 2) return false;
+            for(int i = 2; i <= Math.sqrt(x); i++) {
+                if(x % i == 0){
+                    return false;
+                }
+            }
+            return true;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Calc
+
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        double num1, num2;
+        char operator;
+        
+        while(true){
+            System.out.print("Enter First Number: ");
+            num1 = sc.nextDouble();
+            
+            System.out.print("Enter Second Number: ");
+            num2 = sc.nextDouble();
+            
+            System.out.print("Which Operation do you want to perform:");
+            System.out.println("+, -, *, /, !, q for quit");
+            System.out.print("Enter Operator: ");
+            operator = sc.next().charAt(0);
+            
+            switch(operator) {
+                case '+':
+                    System.out.println(num1 + num2);
+                    break;
+                case '-':
+                    System.out.println(num1 - num2);
+                    break;
+                case '*':
+                    System.out.println(num1 * num2);
+                    break;
+                case '/':
+                    if(num2 == 0) {
+                        System.out.println("Cannot Divide by 0");
+                    } else {
+                    System.out.println(num1 / num2);
+                    }
+                    break;
+                case '!':
+                    int fact = 1;
+        
+                    for(int i = 1; i <= num1; i++) {
+                        fact = fact * i;
+                    }
+                    System.out.println(fact);
+                    break;
+                case 'q':
+                    System.out.println("Quit");
+                    return;
+                default:
+                    System.out.println("Invalid Operator.");
+            }
+        }
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Number sort
+
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Number of elements:");
+        int n = sc.nextInt();
+        
+        System.out.println("Enter Array elements:");
+        int arr[] = new int[n];
+        
+        for(int i = 0; i < n; i++){
+            arr[i] = sc.nextInt();
+        }
+        System.out.println("Array Before Sorting:");
+        for(int i = 0; i < n; i++){
+            System.out.print(arr[i] + " ");
+        }
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n-1; j++){
+                if(arr[j] > arr[j+1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+        }
+        System.out.println("");
+System.out.println("Array After Sorting: ");
+for (int i = 0; i < n; i++) {
+System.out.print(" " + arr[i]);
+}
+    }
+}
+
+
+
+
+
+
+String sort
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter no. of elements: ");
+        int n = sc.nextInt();
+        
+        System.out.println("Enter Array elements: ");
+        String arr[] = new String[n];
+        
+        for(int i = 0; i < n; i++){
+            arr[i] = sc.next();
+        }
+        
+        System.out.println("Array before Sorting: ");
+        for(int i = 0; i < n; i++){
+            System.out.print(" " + arr[i]);
+        }
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n-1; j++){
+                if(arr[j].compareTo(arr[j+1]) > 0){
+                    String temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+        }
+        
+        System.out.println("Array after Sorting:");
+        for(int i = 0; i < n; i++){
+            System.out.println(" " + arr[i]);
+        }
+
+    }
+}
+
+
+
+
+
+Matrix addition
+
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter no. of rows: ");
+        int r = sc.nextInt();
+        
+        System.out.println("Enter no. of cols: ");
+        int c = sc.nextInt();
+        
+        int a[][] = new int[r][c];
+        int b[][] = new int[r][c];
+        int d[][] = new int[r][c];
+        
+        System.out.print("Enter Elements of Matrix A: ");
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                a[i][j] = sc.nextInt();
+            }
+        }
+        
+        System.out.print("Enter Elements of Matrix B: ");
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                b[i][j] = sc.nextInt();
+            }
+        }
+        
+        System.out.print("Elements of Matrix A: ");
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                System.out.print(a[i][j] + " ");
+            }
+            System.out.println(" ");
+        }
+        
+        System.out.print("Elements of Matrix B: ");
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                System.out.print(b[i][j] + " ");
+            }
+            System.out.println(" ");
+        }
+        
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                d[i][j] = a[i][j] + b[i][j];
+            }
+        }
+        System.out.print("Elements of Matrix D: ");
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++){
+                System.out.print(d[i][j] + " ");
+            }
+            System.out.println(" ");
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+constructor overloading and method overloading
+
+
+package exp6;
+
+
+class Calculator {
+	int num1, num2;
+	
+	Calculator() {
+		num1 = 0;
+		num2 = 0;
+		System.out.println("Default Constructor: num1 = " + num1 + " num2 = " + num2);
+	}
+	
+	Calculator(int x) {
+		num1 = x;
+		num2 = 0;
+		System.out.println("Constructor with 1 parameter: num1 = " + num1 + " num2 = " + num2);
+	}
+	
+	Calculator(int x, int y) {
+		num1 = x;
+		num2 = y;
+		System.out.println("Constructor with 2 parameter: num1 = " + num1 + " num2 = " + num2);
+	}
+	
+	int add(int x, int y) {
+		return x + y;
+	}
+	
+	int add(int x, int y, int z) {
+		return x + y + z;
+	}
+	
+	double add(double x, double y) {
+		return x + y;
+	}
+}
+
+public class Main {
+	public static void main(String args []) {
+		Calculator calc1 = new Calculator();
+		Calculator calc2 = new Calculator(10);
+		Calculator calc3 = new Calculator(5, 20);
+		
+		System.out.println("Sum of 2 and 4 = " + calc1.add(2, 4));
+	    System.out.println("Sum of 1, 2 and 3 = " + calc1.add(1, 2, 3));
+	    System.out.println("Sum of 3.14 and 3.41 = " + calc1.add(3.14, 3.41));
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Player inheritance
+
+
+import java.util.*;
+
+class Player {
+    String name;
+    int age;
+    
+    Player(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    void display() {
+        System.out.println("Player Name: " + this.name);
+        System.out.println("Player Age: " + this.age);
+    }
+}
+
+class CricketPlayer extends Player {
+    String role;
+    
+    CricketPlayer(String name, int age, String role) {
+        super(name, age);
+        this.role = role;
+    }
+    void display() {
+            super.display();
+            System.out.println("Sport: Cricket");
+            System.out.println("Role: " + role);
+            System.out.println(" ");
+    }
+}
+    
+class FootballPlayer extends Player {
+        String position;
+        
+        FootballPlayer(String name, int age, String position) {
+            super(name, age);
+            this.position = position;
+        }
+        void display() {
+                super.display();
+                System.out.println("Sport: Football");
+                System.out.println("Position: " + position);
+                System.out.println(" ");
+            }
+    }
+
+
+class Main {
+    public static void main(String[] args) {
+        CricketPlayer cp = new CricketPlayer("Dhoni", 42, "WK");
+        FootballPlayer fp = new FootballPlayer("Zlatan", 44, "Striker");
+        
+        cp.display();
+        fp.display();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Exception handling
+
+
+
+class Main {
+    public static void main(String[] args) {
+        try{
+            System.out.println("Processing Division: ");
+            int b = 73/0;
+        } catch(ArithmeticException e) {
+            System.out.println(e);
+        }
+        
+        try {
+            int[] a = new int[10];
+            a[13] = 55;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(e);
+        }
+    System.out.println("Program Continue Normally...");
+
+    }
+}
+
+
