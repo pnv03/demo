@@ -1,0 +1,55 @@
+package org.example;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.Graphics;
+public class DrawingExample extends JPanel {
+@Override
+protected void paintComponent(Graphics g) {
+super.paintComponent(g);
+// Draw a rectangle
+g.drawRect(50, 50, 100, 60); // x, y, width, height
+// Draw an oval
+g.drawOval(200, 50, 100, 60); // x, y, width, height
+// Draw a line
+g.drawLine(50, 150, 300, 150); // x1, y1, x2, y2
+// Draw text
+g.drawString("Hello, Graphics!", 100, 200); // text, x, y
+}
+public static void main(String[] args) {
+JFrame frame = new JFrame("Graphics Drawing Example");
+DrawingExample panel = new DrawingExample();
+frame.setSize(400, 300); // Set the size of the window
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frame.add(panel); // Add the drawing panel to the frame
+frame.setVisible(true); // Show the window
+}
+}
+
+
+
+
+
+package org.example;
+import java.io.*;
+public class FileCopyLineByLine {
+public static void main(String[] args) {
+System.out.println("Looking in: " + System.getProperty("user.dir"));
+File inputFile = new File("in.dat");
+File outputFile = new File("out.dat");
+try (
+BufferedReader reader = new BufferedReader(new
+FileReader(inputFile));
+BufferedWriter writer = new BufferedWriter(new
+FileWriter(outputFile))
+) {
+String line;
+while ((line = reader.readLine()) != null) {
+writer.write(line);
+writer.newLine();
+}
+System.out.println("✅ File copied successfully.");
+} catch (IOException e) {
+System.out.println("❌ Error during file copy: " + e.getMessage());
+}
+}
+}
